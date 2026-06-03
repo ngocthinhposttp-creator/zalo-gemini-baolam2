@@ -11,6 +11,9 @@ app = Flask(__name__)
 ZALO_APP_ID = os.getenv("ZALO_APP_ID")
 ZALO_APP_SECRET = os.getenv("ZALO_APP_SECRET")
 
+# PKCE Verifier tương ứng với code_challenge:
+# ScMOFS_0WdeOqmSLv5hRjjurqbdIfPg4nsEaDAJTWow
+
 CODE_VERIFIER = "IBgl34nEyYr47Fvh0as8v2SHSPpa_aDKOKCynZayUMrLJ34o9fkOwlC7ZXGoGkxRX3IVD9tYkVhQioU1DiV3_g"
 
 
@@ -98,6 +101,32 @@ def oauth_callback():
 
     except Exception as e:
         return f"Lỗi: {str(e)}"
+
+
+# =========================
+# TEST OA API
+# =========================
+
+@app.route("/test-oa")
+def test_oa():
+
+    access_token = os.getenv("ZALO_ACCESS_TOKEN")
+
+    headers = {
+        "access_token": access_token
+    }
+
+    try:
+        response = requests.get(
+            "https://openapi.zalo.me/v3.0/oa/getoa",
+            headers=headers,
+            timeout=30
+        )
+
+        return response.text
+
+    except Exception as e:
+        return str(e)
 
 
 # =========================
