@@ -1,3 +1,15 @@
+from flask import Flask, request
+import requests
+import os
+
+app = Flask(__name__)
+
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+
+@app.route("/")
+def home():
+    return "UBND xa Bao Lam 2 - OpenRouter OK"
+
 @app.route("/chat")
 def chat():
 
@@ -24,3 +36,6 @@ def chat():
         "status_code": r.status_code,
         "response": r.json()
     }
+
+if __name__ == "__main__":
+    app.run()
