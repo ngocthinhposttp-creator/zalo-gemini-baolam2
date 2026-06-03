@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: zalo-gemini
-    runtime: python
+    name: zalo-gemini-baolam2
+    env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
