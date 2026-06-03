@@ -15,30 +15,24 @@ def chat():
 
     question = request.args.get("q", "Xin chao")
 
-    r = requests.post(
-        "https://openrouter.ai/api/v1/chat/completions",
-        headers={
-            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-            "Content-Type": "application/json"
-        },
-        json={
-            "model": "deepseek/deepseek-chat-v3-0324:free",
-            "messages": [
-                {
-                    "role": "system",
-                    "content": """Bạn là trợ lý ảo của UBND xã Bảo Lâm 2.
-Trả lời ngắn gọn, lịch sự, bằng tiếng Việt.
-Nếu không chắc chắn thì nói người dân liên hệ UBND xã để được hướng dẫn."""
-                },
-                {
-                    "role": "user",
-                    "content": question
-                }
-            ]
-        }
-    )
+r = requests.post(
+    "https://openrouter.ai/api/v1/chat/completions",
+    headers={
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json"
+    },
+    json={
+        "model": "qwen/qwen3-32b:free",
+        "messages": [
+            {
+                "role": "user",
+                "content": question
+            }
+        ]
+    }
+)
 
-    return r.json()
-
-if __name__ == "__main__":
-    app.run()
+return {
+    "status_code": r.status_code,
+    "response": r.json()
+}
