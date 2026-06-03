@@ -29,9 +29,12 @@ def chat():
         ]
     }
 
-    r = requests.post(url,json=payload)
+  r = requests.post(url, json=payload)
 
-    return r.json()
+return {
+    "status_code": r.status_code,
+    "response": r.json()
+}
 
 if __name__ == "__main__":
     app.run()
