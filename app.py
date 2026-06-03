@@ -1,40 +1,44 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 import requests
 import os
 
 app = Flask(__name__)
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 @app.route("/")
 def home():
-    return "UBND xa Bao Lam 2 - Gemini OK"
+    return "UBND xa Bao Lam 2 - OpenRouter OK"
 
 @app.route("/chat")
 def chat():
 
-    question = request.args.get("q","Xin chào")
+    question = request.args.get("q", "Xin chao")
 
-   url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
+    r = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers={
+            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+            "Content-Type": "application/json"
+        },
+        json={
+            "model": "deepseek/deepseek-chat-v3-0324:free",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": """Bạn là trợ lý ảo của UBND xã Bảo Lâm 2.
+Trả lời ngắn gọn, lịch sự, bằng tiếng Việt.
+Nếu không chắc chắn thì nói người dân liên hệ UBND xã để được hướng dẫn."""
+                },
+                {
+                    "role": "user",
+                    "content": question
+                }
+            ]
+        }
+    )
 
-    payload = {
-        "contents":[
-            {
-                "parts":[
-                    {
-                        "text": question
-                    }
-                ]
-            }
-        ]
-    }
-
-  r = requests.post(url, json=payload)
-
-return {
-    "status_code": r.status_code,
-    "response": r.json()
-}
+    return r.json()
 
 if __name__ == "__main__":
     app.run()
