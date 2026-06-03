@@ -4,35 +4,52 @@ import os
 
 app = Flask(__name__)
 
+# =========================
+# CONFIG
+# =========================
+
 ZALO_APP_ID = os.getenv("ZALO_APP_ID")
 ZALO_APP_SECRET = os.getenv("ZALO_APP_SECRET")
 
+CODE_VERIFIER = "IBgl34nEyYr47Fvh0as8v2SHSPpa_aDKOKCynZayUMrLJ34o9fkOwlC7ZXGoGkxRX3IVD9tYkVhQioU1DiV3_g"
 
-# Trang chủ
+
+# =========================
+# HOME
+# =========================
+
 @app.route("/")
 def home():
     return "Bao Lam 2 AI OK"
 
 
-# File xác thực domain Zalo
+# =========================
+# XÁC THỰC DOMAIN ZALO
+# =========================
+
 @app.route("/zalo_verifierHTIC3B7d9IrAvgKrYCbpOth3wMoMjJmwCJGm.html")
 def zalo_verify():
     return "There Is No Limit To What You Can Accomplish Using Zalo!"
 
 
-# OAuth Callback
+# =========================
+# OAUTH CALLBACK
+# =========================
+
 @app.route("/oauth/callback")
 def oauth_callback():
 
     code = request.args.get("code")
     state = request.args.get("state")
+    oa_id = request.args.get("oa_id")
 
-    print("===== ZALO OAUTH =====")
-    print("CODE:", code)
+    print("========== ZALO CALLBACK ==========")
+    print("OA_ID:", oa_id)
     print("STATE:", state)
+    print("CODE:", code)
 
     if not code:
-        return "No authorization code"
+        return "Không nhận được authorization code"
 
     try:
 
@@ -41,7 +58,8 @@ def oauth_callback():
         payload = {
             "app_id": ZALO_APP_ID,
             "grant_type": "authorization_code",
-            "code": code
+            "code": code,
+            "code_verifier": CODE_VERIFIER
         }
 
         headers = {
@@ -57,7 +75,7 @@ def oauth_callback():
 
         result = response.json()
 
-        print("===== TOKEN RESULT =====")
+        print("========== TOKEN RESULT ==========")
         print(result)
 
         access_token = result.get("access_token")
@@ -66,23 +84,26 @@ def oauth_callback():
         return f"""
         <html>
         <body>
-            <h2>OA ACCESS TOKEN</h2>
-            <p>{access_token}</p>
+            <h1>OA ACCESS TOKEN</h1>
+            <pre>{access_token}</pre>
 
-            <h2>REFRESH TOKEN</h2>
-            <p>{refresh_token}</p>
+            <h1>REFRESH TOKEN</h1>
+            <pre>{refresh_token}</pre>
 
-            <h2>RAW RESPONSE</h2>
+            <h1>RAW RESPONSE</h1>
             <pre>{result}</pre>
         </body>
         </html>
         """
 
     except Exception as e:
-        return str(e)
+        return f"Lỗi: {str(e)}"
 
 
-# Webhook Zalo OA
+# =========================
+# WEBHOOK
+# =========================
+
 @app.route("/webhook", methods=["GET", "POST"])
 def webhook():
 
@@ -91,13 +112,17 @@ def webhook():
 
     data = request.get_json(silent=True)
 
-    print("===== ZALO WEBHOOK =====")
+    print("========== WEBHOOK ==========")
     print(data)
 
     return jsonify({
         "success": True
     }), 200
 
+
+# =========================
+# RUN
+# =========================
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
