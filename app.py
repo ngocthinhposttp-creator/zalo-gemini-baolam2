@@ -1,6 +1,12 @@
 from flask import Flask, request, jsonify
+import requests
+import os
 
 app = Flask(__name__)
+
+ZALO_APP_ID = os.getenv("ZALO_APP_ID")
+ZALO_APP_SECRET = os.getenv("ZALO_APP_SECRET")
+
 
 # Trang chủ
 @app.route("/")
@@ -14,9 +20,10 @@ def zalo_verify():
     return "There Is No Limit To What You Can Accomplish Using Zalo!"
 
 
-# OAuth Callback URL
+# OAuth Callback
 @app.route("/oauth/callback")
 def oauth_callback():
+
     code = request.args.get("code")
     state = request.args.get("state")
 
@@ -24,26 +31,64 @@ def oauth_callback():
     print("CODE:", code)
     print("STATE:", state)
 
-    return f"""
-    <html>
-    <body>
-        <h2>Zalo OAuth Success</h2>
-        <p><b>Code:</b> {code}</p>
-        <p><b>State:</b> {state}</p>
-    </body>
-    </html>
-    """
+    if not code:
+        return "No authorization code"
+
+    try:
+
+        token_url = "https://oauth.zaloapp.com/v4/oa/access_token"
+
+        payload = {
+            "app_id": ZALO_APP_ID,
+            "grant_type": "authorization_code",
+            "code": code
+        }
+
+        headers = {
+            "secret_key": ZALO_APP_SECRET
+        }
+
+        response = requests.post(
+            token_url,
+            data=payload,
+            headers=headers,
+            timeout=30
+        )
+
+        result = response.json()
+
+        print("===== TOKEN RESULT =====")
+        print(result)
+
+        access_token = result.get("access_token")
+        refresh_token = result.get("refresh_token")
+
+        return f"""
+        <html>
+        <body>
+            <h2>OA ACCESS TOKEN</h2>
+            <p>{access_token}</p>
+
+            <h2>REFRESH TOKEN</h2>
+            <p>{refresh_token}</p>
+
+            <h2>RAW RESPONSE</h2>
+            <pre>{result}</pre>
+        </body>
+        </html>
+        """
+
+    except Exception as e:
+        return str(e)
 
 
 # Webhook Zalo OA
 @app.route("/webhook", methods=["GET", "POST"])
 def webhook():
 
-    # Kiểm tra webhook
     if request.method == "GET":
         return "Webhook OK", 200
 
-    # Nhận sự kiện từ Zalo
     data = request.get_json(silent=True)
 
     print("===== ZALO WEBHOOK =====")
