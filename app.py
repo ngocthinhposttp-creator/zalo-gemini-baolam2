@@ -15,27 +15,21 @@ def chat():
 
     question = request.args.get("q", "Xin chao")
 
-    r = requests.post(
-        "https://openrouter.ai/api/v1/chat/completions",
-        headers={
-            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-            "Content-Type": "application/json"
-        },
-        json={
-            "model": "nvidia/nemotron-3-super-120b-a12b:free",
-            "messages": [
-                {
-                    "role": "user",
-                    "content": question
-                }
-            ]
-        }
-    )
-
-    return {
-        "status_code": r.status_code,
-        "response": r.json()
+r = requests.post(
+    "https://openrouter.ai/api/v1/chat/completions",
+    headers={
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json"
+    },
+    json={
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        "messages": [
+            {
+                "role": "user",
+                "content": question
+            }
+        ]
     }
+)
 
-if __name__ == "__main__":
-    app.run()
+return r.text
