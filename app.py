@@ -11,9 +11,7 @@ app = Flask(__name__)
 ZALO_APP_ID = os.getenv("ZALO_APP_ID")
 ZALO_APP_SECRET = os.getenv("ZALO_APP_SECRET")
 
-# PKCE Verifier tương ứng với code_challenge:
-# ScMOFS_0WdeOqmSLv5hRjjurqbdIfPg4nsEaDAJTWow
-
+# PKCE Verifier đã dùng thành công
 CODE_VERIFIER = "IBgl34nEyYr47Fvh0as8v2SHSPpa_aDKOKCynZayUMrLJ34o9fkOwlC7ZXGoGkxRX3IVD9tYkVhQioU1DiV3_g"
 
 
@@ -27,7 +25,7 @@ def home():
 
 
 # =========================
-# XÁC THỰC DOMAIN ZALO
+# ZALO DOMAIN VERIFY
 # =========================
 
 @app.route("/zalo_verifierHTIC3B7d9IrAvgKrYCbpOth3wMoMjJmwCJGm.html")
@@ -46,13 +44,13 @@ def oauth_callback():
     state = request.args.get("state")
     oa_id = request.args.get("oa_id")
 
-    print("========== ZALO CALLBACK ==========")
+    print("\n========== ZALO CALLBACK ==========")
     print("OA_ID:", oa_id)
     print("STATE:", state)
     print("CODE:", code)
 
     if not code:
-        return "Không nhận được authorization code"
+        return "Khong nhan duoc authorization code"
 
     try:
 
@@ -78,7 +76,7 @@ def oauth_callback():
 
         result = response.json()
 
-        print("========== TOKEN RESULT ==========")
+        print("\n========== TOKEN RESULT ==========")
         print(result)
 
         access_token = result.get("access_token")
@@ -100,33 +98,19 @@ def oauth_callback():
         """
 
     except Exception as e:
-        return f"Lỗi: {str(e)}"
+        return f"Loi: {str(e)}"
 
 
 # =========================
-# TEST OA API
+# TEST
 # =========================
 
-@app.route("/test-oa")
-def test_oa():
-
-    access_token = os.getenv("ZALO_ACCESS_TOKEN")
-
-    headers = {
-        "access_token": access_token
-    }
-
-    try:
-        response = requests.get(
-            "https://openapi.zalo.me/v3.0/oa/getoa",
-            headers=headers,
-            timeout=30
-        )
-
-        return response.text
-
-    except Exception as e:
-        return str(e)
+@app.route("/test")
+def test():
+    return jsonify({
+        "status": "ok",
+        "app_id": ZALO_APP_ID
+    })
 
 
 # =========================
@@ -136,17 +120,29 @@ def test_oa():
 @app.route("/webhook", methods=["GET", "POST"])
 def webhook():
 
+    # Zalo kiểm tra webhook
     if request.method == "GET":
         return "Webhook OK", 200
 
-    data = request.get_json(silent=True)
+    try:
 
-    print("========== WEBHOOK ==========")
-    print(data)
+        data = request.get_json(silent=True)
 
-    return jsonify({
-        "success": True
-    }), 200
+        print("\n========== WEBHOOK ==========")
+        print(data)
+
+        return jsonify({
+            "success": True
+        }), 200
+
+    except Exception as e:
+
+        print("WEBHOOK ERROR:", str(e))
+
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 200
 
 
 # =========================
@@ -154,4 +150,7 @@ def webhook():
 # =========================
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    app.run(
+        host="0.0.0.0",
+        port=10000
+    )
