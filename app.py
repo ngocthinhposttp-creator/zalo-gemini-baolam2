@@ -22,7 +22,7 @@ def chat():
             "Content-Type": "application/json"
         },
         json={
-            "model": "qwen/qwen3-32b:free",
+            "model": "nvidia/nemotron-3-super-120b-a12b:free",
             "messages": [
                 {
                     "role": "user",
