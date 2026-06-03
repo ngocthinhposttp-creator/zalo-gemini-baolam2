@@ -6,16 +6,24 @@ app = Flask(__name__)
 def home():
     return "Bao Lam 2 AI OK"
 
+# File xác thực domain Zalo
+@app.route("/zalo_verifierHTIC3B7d9IrAvgKrYCbpOth3wMoMjJmwCJGm.html")
+def zalo_verify():
+    return "There Is No Limit To What You Can Accomplish Using Zalo!"
+
+# Webhook Zalo
 @app.route("/webhook", methods=["GET", "POST"])
 def webhook():
     if request.method == "GET":
         return "Webhook OK", 200
 
-    data = request.json
+    data = request.get_json(silent=True)
+
+    print("Webhook received:")
     print(data)
 
     return jsonify({
-        "message": "received"
+        "success": True
     }), 200
 
 if __name__ == "__main__":
