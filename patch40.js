@@ -329,7 +329,7 @@ var oldExtractFile=extractFile, oldMeta=verifiedPdfMeta, oldClassify=classifyIte
 
   try{
     var el=document.querySelector('#aiStatus');if(el)el.textContent='Reader Engine '+V+' · khóa metadata đầu trang + chữ ký số';
-    var b=document.querySelector('#readerVersionBadge');if(!b){b=document.createElement('div');b.id='readerVersionBadge';b.style.cssText='position:fixed;right:12px;bottom:12px;z-index:9999;background:#0d2f4a;color:#fff;padding:7px 10px;border-radius:999px;font:600 11px system-ui;opacity:.9';document.body.appendChild(b)}b.textContent='BL2 Reader 4.0 QA';
+    var b=document.querySelector('#readerVersionBadge');if(!b){b=document.createElement('div');b.id='readerVersionBadge';b.style.cssText='position:fixed;right:12px;bottom:12px;z-index:9999;background:#0d2f4a;color:#fff;padding:7px 10px;border-radius:999px;font:600 11px system-ui;opacity:.9';document.body.appendChild(b)}b.textContent='BL2 Reader 4.0 · Chính thức';
   }catch(e){}
 
 /* ===== Reader 3.9 · WebLLM + module scope compatibility ===== */
@@ -420,8 +420,8 @@ classifyAll = async function(){
 setTimeout(()=>{
   let b=document.querySelector('#readerVersionBadge');
   if(!b){b=document.createElement('div');b.id='readerVersionBadge';b.style.cssText='position:fixed;right:12px;bottom:12px;z-index:9999;background:#0d2f4a;color:#fff;padding:7px 10px;border-radius:999px;font:600 11px system-ui;opacity:.9';document.body.appendChild(b)}
-  b.textContent='BL2 Reader 4.0 QA';
-  const a=$('#aiStatus');if(a)a.textContent='Reader 4.0 · production naming · QA 2 PDF thật';
+  b.textContent='BL2 Reader 4.0 · Chính thức';
+  const a=$('#aiStatus');if(a)a.textContent='Reader 4.0 · bản chính thức · tên file nghiệp vụ ngắn';
 },0);
 /* ===== end Reader 3.8 ===== */
-setTimeout(()=>{const b=document.querySelector('#readerVersionBadge');if(b)b.textContent='BL2 Reader 4.0 QA';const a=$('#aiStatus');if(a)a.textContent='Reader 4.0 · tên file nghiệp vụ ngắn · không lấy biểu ngữ/văn bản viện dẫn';},0);
+setTimeout(()=>{const b=document.querySelector('#readerVersionBadge');if(b)b.textContent='BL2 Reader 4.0 · Chính thức';const a=$('#aiStatus');if(a)a.textContent='Reader 4.0 · tên file nghiệp vụ ngắn · không lấy biểu ngữ/văn bản viện dẫn';},0);
