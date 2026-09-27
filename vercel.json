@@ -1,1 +1,1 @@
-{"version":2,"builds":[{"src":"api/*.js","use":"@vercel/node"},{"src":"index.html","use":"@vercel/static"},{"src":"patch38.js","use":"@vercel/static"}],"routes":[{"src":"/api/(.*)","dest":"/api/$1.js"},{"src":"/patch38.js","dest":"/patch38.js"},{"src":"/(.*)","dest":"/index.html"}]}
+{"version":2,"builds":[{"src":"api/*.js","use":"@vercel/node"},{"src":"index.html","use":"@vercel/static"},{"src":"patch39.js","use":"@vercel/static"}],"routes":[{"src":"/api/(.*)","dest":"/api/$1.js"},{"src":"/patch39.js","dest":"/patch39.js"},{"src":"/(.*)","dest":"/index.html"}]}
